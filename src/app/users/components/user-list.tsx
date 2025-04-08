@@ -12,8 +12,8 @@ const UserList: React.FC<UserListProps> = ({ users, onViewProfile }) => {
   const [filter, setFilter] = useState('All');
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = user.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
+                          user.email?.toLowerCase()?.includes(searchTerm.toLowerCase());
     const matchesFilter = 
       filter === 'All' || 
       (filter === 'Active' && user.isActive) || 
