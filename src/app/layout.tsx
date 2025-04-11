@@ -1,13 +1,16 @@
 // app/layout.tsx
 
 import React from "react";
-
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme.context";
 
-import "./globals.css";
 import { AuthProvider } from "@/components/auth.context";
 import { FormProvider } from "@/components/form.context";
+import { ThemeProvider } from "@/components/theme.context";
+
+import LogoutButton from "@/components/logout-button";
+import ThemeToggle from "@/components/theme-toggle";
+import Link from "next/link";
+import Header from "@/components/header";
 
 export const metadata = {
   title: "User Management Dashboard",
@@ -21,10 +24,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
         <AuthProvider>
           <FormProvider>
-            <ThemeProvider>{children}</ThemeProvider>
+            <ThemeProvider>
+              <Header />
+              <main className="p-6">{children}</main>
+            </ThemeProvider>
           </FormProvider>
         </AuthProvider>
       </body>

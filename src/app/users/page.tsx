@@ -4,13 +4,13 @@
 import React, { useEffect, useState } from "react";
 import { User } from "./types/user";
 
-import { useRouter } from "next/navigation";
-import { useTheme } from "@/components/theme.context";
-import { useFormContext } from "@/components/form.context";
 import { useAuth } from "@/components/auth.context";
+import { useFormContext } from "@/components/form.context";
+import { useTheme } from "@/components/theme.context";
+import { useRouter } from "next/navigation";
 import UserForm from "./components/user-form";
-import UserProfile from "./components/user-profile";
 import UserList from "./components/user-list";
+import UserProfile from "./components/user-profile";
 
 const initialUsers: User[] = [
   {
@@ -124,21 +124,6 @@ const UserDashboard: React.FC = () => {
             Add New User
           </button>
         )}
-
-        <div className="flex items-center gap-5">
-          <button
-            onClick={toggleTheme}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Toggle Theme
-          </button>
-          <button
-            onClick={logOut}
-            className="px-4 py-2 bg-red-500 text-white rounded"
-          >
-            Logout
-          </button>
-        </div>
       </div>
 
       {isAdding && (
