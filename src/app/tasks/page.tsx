@@ -28,6 +28,7 @@ export default function Dashboard() {
     dueDate: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [error, setError] = useState<{ title?: string; dueDate?: string }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -128,11 +129,28 @@ export default function Dashboard() {
   };
 
   const addTask = () => {
-    if (!newTask.title.trim()) return;
+    const errors: { title?: string; dueDate?: string } = {};
+  
+    if (!newTask.title.trim()) {
+      errors.title = "Task title is required.";
+    }
+  
+    if (!newTask.dueDate.trim()) {
+      errors.dueDate = "Due date is required.";
+    }
+  
+    if (Object.keys(errors).length > 0) {
+      setError(errors);
+      return;
+    }
+  
+    setError({}); // Clear errors if valid
+  
     const updatedTasks = [...tasks];
     const existingIndex = updatedTasks.findIndex(
       (task) => task.title.toLowerCase() === newTask.title.toLowerCase()
     );
+  
     if (editIndex !== null) {
       updatedTasks[editIndex] = newTask;
       setEditIndex(null);
@@ -141,11 +159,13 @@ export default function Dashboard() {
     } else {
       updatedTasks.push(newTask);
     }
+  
     setTasks(updatedTasks);
     setFilteredTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     setNewTask({ title: "", category: "Work", priority: "Medium", dueDate: "" });
   };
+  
 
   const editTask = (index: number) => {
     setNewTask(tasks[index]);
@@ -188,14 +208,24 @@ export default function Dashboard() {
           <option value="Personal">Personal</option>
           <option value="Health">Health</option>
         </select>
-        <Button variant="outline" onClick={exportToCSV}>
-          <Download className="mr-2" />
-          Export
-        </Button>
-        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-          <Upload className="mr-2" />
-          Import
-        </Button>
+        <Button
+         variant="outline"
+         onClick={exportToCSV}
+         className={theme === "light" ? "text-black fill-black" : ""}
+         >
+         <Download className="mr-2" />
+         Export
+         </Button>
+
+        <Button
+         variant="outline"
+         onClick={() => fileInputRef.current?.click()}
+         className={theme === "light" ? "text-black fill-black" : ""}
+         >
+         <Upload className="mr-2" />
+         Import
+         </Button>
+
         <input
           type="file"
           accept=".csv"
@@ -206,37 +236,52 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
-        <Input
-          placeholder="Task title"
-          value={newTask.title}
-          className={inputStyle}
-          onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-        />
-        <select
-          className={inputStyle}
-          value={newTask.category}
-          onChange={(e) => setNewTask({ ...newTask, category: e.target.value as Task["category"] })}
-        >
-          <option value="Work">Work</option>
-          <option value="Personal">Personal</option>
-          <option value="Health">Health</option>
-        </select>
-        <select
-          className={inputStyle}
-          value={newTask.priority}
-          onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as Task["priority"] })}
-        >
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-        <Input
-          type="date"
-          value={newTask.dueDate}
-          className={inputStyle}
-          onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-        />
-      </div>
+  <div className="flex flex-col">
+    <Input
+      placeholder="Task title"
+      value={newTask.title}
+      className={`${inputStyle} w-full`}
+      onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+    />
+    {error.title && <span className="text-sm text-red-500 mt-1">{error.title}</span>}
+  </div>
+
+  <div className="flex flex-col">
+    <select
+      className={`${inputStyle} w-full h-[42px]`} // Match Input height
+      value={newTask.category}
+      onChange={(e) => setNewTask({ ...newTask, category: e.target.value as Task["category"] })}
+    >
+      <option value="Work">Work</option>
+      <option value="Personal">Personal</option>
+      <option value="Health">Health</option>
+    </select>
+  </div>
+
+  <div className="flex flex-col">
+    <select
+      className={`${inputStyle} w-full h-[42px]`}
+      value={newTask.priority}
+      onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as Task["priority"] })}
+    >
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+  </div>
+
+  <div className="flex flex-col">
+    <Input
+      type="date"
+      value={newTask.dueDate}
+      className={`${inputStyle} w-full`}
+      onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+    />
+    {error.dueDate && <span className="text-sm text-red-500 mt-1">{error.dueDate}</span>}
+  </div>
+</div>
+
+
 
       <div className="mb-8">
         <Button variant="default" onClick={addTask} className="w-full sm:w-auto">

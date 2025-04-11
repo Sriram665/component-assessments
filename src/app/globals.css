@@ -22,3 +22,8 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
 }
+
+/* Force date input text color for light mode */
+input[type="date"].force-black::-webkit-datetime-edit {
+  color: black;
+}
